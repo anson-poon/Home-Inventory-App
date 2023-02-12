@@ -2,6 +2,7 @@ import customtkinter
 from tkinter import *
 from tkinter import ttk
 from tktooltip import ToolTip
+import pandas as pd
 
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")
@@ -18,6 +19,16 @@ def open_database():
     top = customtkinter.CTkToplevel()
     top.geometry("920x470")
     top.title("Database")
+    top.resizable(0, 0)
+
+    # Menu
+    my_menu = Menu(top)
+    top.config(menu=my_menu)
+
+    # Menu dropdown
+    file_menu = Menu(my_menu, tearoff=False)
+    my_menu.add_cascade(label="Testing", menu=file_menu)
+    file_menu.add_command(label="Open")
 
     # Button to add item
     button_add = customtkinter.CTkButton(master=top, text="Add", command=open_add_item)
@@ -107,51 +118,155 @@ def open_database():
 
 
 def open_add_item():
+    """Open the Add item window"""
     top = customtkinter.CTkToplevel()
-    top.geometry("570x320")
+    top.geometry("510x650")
     top.title("Add Item")
+    top.resizable(0, 0)
 
+    # Title label
+    label_title = customtkinter.CTkLabel(master=top, text="Add Item", font=("Roboto", 20))
+    label_title.grid(column=0, row=0, columnspan=2, sticky=NSEW, pady=20)
+
+    # Name label and entry
     label_name = customtkinter.CTkLabel(master=top, text="Name", font=("Roboto", 14))
-    label_name.pack(pady=8, padx=10)
+    label_name.grid(column=0, row=1, pady=10, padx=10)
+    entry_name = customtkinter.CTkEntry(master=top, width=400, height=30)
+    entry_name.grid(column=1, row=1, pady=10, padx=10)
 
-    entry_name = customtkinter.CTkEntry(master=top, width=500, height=30)
-    entry_name.pack(pady=8, padx=10)
-
+    # Brand label and entry
     label_brand = customtkinter.CTkLabel(master=top, text="Brand", font=("Roboto", 14))
-    label_brand.pack(pady=8, padx=10)
+    label_brand.grid(column=0, row=2, pady=10, padx=10)
+    entry_brand = customtkinter.CTkEntry(master=top, width=400, height=30)
+    entry_brand.grid(column=1, row=2, pady=10, padx=10)
 
-    entry_brand = customtkinter.CTkEntry(master=top, width=500, height=30)
-    entry_brand.pack(pady=8, padx=10)
+    # Category label and entry
+    label_category = customtkinter.CTkLabel(master=top, text="Category", font=("Roboto", 14))
+    label_category.grid(column=0, row=3, pady=10, padx=10)
+    entry_category = customtkinter.CTkEntry(master=top, width=400, height=30)
+    entry_category.grid(column=1, row=3, pady=10, padx=10)
 
-    label_dimensions = customtkinter.CTkLabel(master=top, text="Dimensions", font=("Roboto", 14))
-    label_dimensions.pack(pady=8, padx=10)
+    # Color label and entry
+    label_color = customtkinter.CTkLabel(master=top, text="Color", font=("Roboto", 14))
+    label_color.grid(column=0, row=4, pady=10, padx=10)
+    entry_color = customtkinter.CTkEntry(master=top, width=400, height=30)
+    entry_color.grid(column=1, row=4, pady=10, padx=10)
 
-    entry_brand = customtkinter.CTkEntry(master=top, width=500, height=30)
-    entry_brand.pack(pady=8, padx=10)
+    # Location label and entry
+    label_location = customtkinter.CTkLabel(master=top, text="Location", font=("Roboto", 14))
+    label_location.grid(column=0, row=5, pady=10, padx=10)
+    entry_location = customtkinter.CTkEntry(master=top, width=400, height=30)
+    entry_location.grid(column=1, row=5, pady=10, padx=10)
 
-    button_go = customtkinter.CTkButton(master=top, text="Go", command=open_database)
-    button_go.pack(pady=12, padx=10)
+    # Width label and entry
+    label_width = customtkinter.CTkLabel(master=top, text="Width", font=("Roboto", 14))
+    label_width.grid(column=0, row=6, pady=10, padx=10)
+    entry_width = customtkinter.CTkEntry(master=top, width=200, height=30)
+    entry_width.grid(column=1, row=6, sticky=W, pady=10, padx=10)
+
+    # Depth label and entry
+    label_depth = customtkinter.CTkLabel(master=top, text="Depth", font=("Roboto", 14))
+    label_depth.grid(column=0, row=7, pady=10, padx=10)
+    entry_depth = customtkinter.CTkEntry(master=top, width=200, height=30)
+    entry_depth.grid(column=1, row=7, sticky=W, pady=10, padx=10)
+
+    # Height label and entry
+    label_height = customtkinter.CTkLabel(master=top, text="Height", font=("Roboto", 14))
+    label_height.grid(column=0, row=8, pady=10, padx=10)
+    entry_height = customtkinter.CTkEntry(master=top, width=200, height=30)
+    entry_height.grid(column=1, row=8, sticky=W, pady=10, padx=10)
+
+    # Price label and entry
+    label_price = customtkinter.CTkLabel(master=top, text="Price", font=("Roboto", 14))
+    label_price.grid(column=0, row=9, pady=10, padx=10)
+    entry_price = customtkinter.CTkEntry(master=top, width=200, height=30)
+    entry_price.grid(column=1, row=9, sticky=W, pady=10, padx=10)
+
+    # Link label and entry
+    label_link = customtkinter.CTkLabel(master=top, text="Link", font=("Roboto", 14))
+    label_link.grid(column=0, row=10, pady=10, padx=10)
+    entry_link = customtkinter.CTkEntry(master=top, width=400, height=30)
+    entry_link.grid(column=1, row=10, sticky=W, pady=10, padx=10)
+
+    # Button to submit item
+    button_go = customtkinter.CTkButton(master=top, text="Go", command=lambda: add_to_csv(entry_name, entry_brand,
+                                                                                          entry_category, entry_color,
+                                                                                          entry_location, entry_width,
+                                                                                          entry_depth, entry_height,
+                                                                                          entry_price, entry_link,
+                                                                                          error, top))
+    button_go.grid(column=0, row=11, columnspan=2, pady=10, padx=10)
+
+    error = customtkinter.CTkLabel(master=top, text="")  # Error message for invalid search
+    error.grid(column=0, row=12, columnspan=2, sticky=NSEW, padx=20)
+
+
+def add_to_csv(name, brand, category, color, location, width, depth, height, price, link, err, top):
+    """Validate and add an item to the inventory database"""
+    item_list = [name, brand, category, color, location, width, depth, height, price, link]
+
+    # If an element in the list is empty, print error message and break
+    for item in item_list:
+        if len(item.get()) == 0:
+            err.configure(text="One or more field is empty", text_color="orange")
+            return False
+
+    # Else add item
+    item = f"{name.get()},{brand.get()},{category.get()},{color.get()},{location.get()},{width.get()},{depth.get()}," \
+           f"{height.get()},{price.get()},{link.get()}\n"
+    # Append new item to home_inventory.csv
+    with open("home_inventory.csv", "a") as file:
+        file.write(item)
+
+    top.destroy()
+
+    # df = pd.read_csv("home_inventory.csv")
+    # print(df.iloc[0:3])
 
 
 def open_remove_item():
     top = customtkinter.CTkToplevel()
-    top.geometry("520x180")
+    top.geometry("480x200")
     top.title("Remove Item")
+    top.resizable(0, 0)
 
+    # Title label
+    label_title = customtkinter.CTkLabel(master=top, text="Remove Item", font=("Roboto", 20))
+    label_title.grid(column=0, row=0, columnspan=2, sticky=NSEW, pady=20)
+
+    # Name label and entry
     label_name = customtkinter.CTkLabel(master=top, text="Name", font=("Roboto", 14))
-    label_name.pack(pady=8, padx=10)
+    label_name.grid(column=0, row=1, pady=10, padx=10)
+    entry_name = customtkinter.CTkEntry(master=top, width=400, height=30)
+    entry_name.grid(column=1, row=1, sticky=W, pady=10, padx=10)
 
-    entry_name = customtkinter.CTkEntry(master=top, width=500, height=30)
-    entry_name.pack(pady=8, padx=10)
+    error = customtkinter.CTkLabel(master=top, text="")
 
-    button_go = customtkinter.CTkButton(master=top, text="Go", command=open_warning)
-    button_go.pack(pady=12, padx=10)
+    # Button to submit item
+    button_go = customtkinter.CTkButton(master=top, text="Go", command=remove_from_csv(entry_name, error, top))
+    button_go.grid(column=0, row=2, columnspan=2, pady=10, padx=10)
+
+    # Error message for invalid search
+    error.grid(column=0, row=3, columnspan=2, sticky=NSEW, padx=20)
 
 
-def open_warning():
+def remove_from_csv(t, err, top):
+    """Validate and remove an item from the inventory database"""
+
+    # Validate text entry to be non-empty value
+    if len(t.get()) == 0:
+        err.configure(text="One or more field is emptyyyyy", text_color="orange")
+
+    # Remove item
+    print("OK")
+    top.destroy()
+
+
+def open_remove_warning():
     top = customtkinter.CTkToplevel()
     top.geometry("450x180")
     top.title("Warning")
+    top.resizable(0, 0)
 
     label_warning = customtkinter.CTkLabel(master=top, text="Are you sure you want to delete this item?",
                                            font=("Roboto", 14))
@@ -168,6 +283,7 @@ def open_advanced_search():
     top = customtkinter.CTkToplevel()
     top.geometry("270x350")
     top.title("Advanced Search")
+    top.resizable(0, 0)
 
     # Search entry fields for the dimensions
     label2 = customtkinter.CTkLabel(master=top, text="Dimensions", font=("Roboto", 20))
@@ -189,7 +305,7 @@ def open_advanced_search():
     error.pack(pady=20)
 
 
-def text_search_validation(t, err):
+def text_entry_validation(t, err):
     """Validate text entry to be non-empty string value"""
     if len(t.get()) != 0:
         open_database()
@@ -217,7 +333,7 @@ class Home:
         self.root = root
         self.root.title(title)
         self.root.geometry(geometry)
-        # self.root.resizable(0, 0)
+        self.root.resizable(0, 0)
 
         self.root.columnconfigure((0, 1, 2), weight=1)
         self.root.rowconfigure(0, weight=3)
@@ -239,7 +355,7 @@ class Home:
 
         # Button - Search
         self.button_search = customtkinter.CTkButton(master=self.frame, text="Search",
-                                                     command=lambda: text_search_validation(self.entry, self.error))
+                                                     command=lambda: text_entry_validation(self.entry, self.error))
         self.button_search.grid(column=3, row=1, pady=10, padx=10)
 
         # Button - Advanced Search
@@ -278,7 +394,7 @@ class Home:
         self.subframe2 = customtkinter.CTkFrame(master=self.root, corner_radius=20)
         self.subframe2.grid(column=1, row=1, sticky=NSEW, pady=20, padx=40)
 
-        self.label_subframe2 = customtkinter.CTkLabel(master=self.subframe2, text="Categories", font=("Roboto", 15))
+        self.label_subframe2 = customtkinter.CTkLabel(master=self.subframe2, text="Locations", font=("Roboto", 15))
         self.label_subframe2.pack(pady=20, padx=40)
 
         self.button1 = customtkinter.CTkButton(master=self.subframe2, text="Dining Room", command=open_database)
