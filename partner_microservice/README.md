@@ -20,11 +20,14 @@ Project is created with:
 ## Requesting data
 1. The client program send a request to the microservice by send the keyword "run" to pipeline.txt
 2. pipeline.txt forward this request to the microservice
-3. The microservice read database.csv which contains 20-30 cards and pick one randomly
-4. The microservice save the
+3. The microservice read and pick a random card from database.csv
+4. The microservice write the card in result.txt
+5. The microservice append the card to inventory.csv
+6. The microservice empty pipeline.txt for the next request
 
 ## Receiving data
-This project is simple Lorem ipsum dolor generator.
+1. The client program read result.txt to receive the single generated card
+2. The client program read inventory.csv to receive an inventory of generated cards
 
 ## UML Sequence Diagram
-[UML Sequence Diagram](/../main/documentation/Partner%20Program%20UML%20Sequence%20Diagram.png?raw=true)
+![UML Sequence Diagram](/../main/documentation/Partner%20Program%20UML%20Sequence%20Diagram.png?raw=true)
