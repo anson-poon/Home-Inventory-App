@@ -1,4 +1,5 @@
 import time
+import pandas as pd
 
 if __name__ == "__main__":
     while True:
@@ -14,15 +15,22 @@ if __name__ == "__main__":
                 # generate an image if input is 1
                 print("Generating card...")
 
-                # overwrite prng-service.txt value with "run"
+                # overwrite pipeline.txt value with "run"
                 f = open("pipeline.txt", "w")
                 f.write("run")
                 f.close()
-                time.sleep(5)
+                time.sleep(3)
 
-                # read the generated number from prng-service.txt,
-                f = open("pipeline.txt", "r")
-                line = f.readline()
+                # read and print the generated card in result.txt
+                with open("result.txt", "r") as r_file:
+                    result = r_file.readline()
+                print(f"Content in result.txt:\n"
+                      f"{result}")
+
+                # read and print the generated card in inventory.csv
+                df = pd.read_csv("inventory.csv")
+                print(f"Content in inventory.csv:\n"
+                      f"{df}")
 
             elif user_input == 2:
                 # quit program if input is 2
