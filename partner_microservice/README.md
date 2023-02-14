@@ -8,6 +8,7 @@ This README provides an overview of the technologies used, the procedure to how 
 
 ## Table of contents
 * [Technologies](#technologies)
+* [Files](#files)
 * [Requesting Data](#requesting-data)
 * [Receiving Data](#receiving-data)
 * [UML Sequence Diagram](#uml-sequence-diagram)
@@ -16,6 +17,14 @@ This README provides an overview of the technologies used, the procedure to how 
 Project is created with:
 * Python
 * Pandas library
+
+## Files
+* test_client_program.py - A simulated main program to demostrate the microservice
+* microservice.py - The microservice for the program
+* pipeline.txt - The communication pipe between client program and microservice
+* database.csv - A csv file that stores a database of 10 cards, each with a unique ID and name
+* result.txt - A text file for the microserice to store a randomly generated card
+* inventory.txt - An existing list of cards that the user owns, the microservice append a randomly generated card onto the inventory at each request.
 
 ## Requesting data
 1. The client program send a request to the microservice by send the keyword "run" to pipeline.txt
