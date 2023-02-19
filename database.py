@@ -9,28 +9,32 @@ import webbrowser as wb
 def open_database(selection):
     """Open database window"""
     frame = customtkinter.CTkToplevel()
-    frame.geometry("1500x770")
+    frame.geometry("1510x800")
     frame.title("Database")
     frame.resizable(0, 0)
 
     # Button to add item
     button_add = customtkinter.CTkButton(master=frame, text="Add", command=lambda: open_add_item(my_tree, tree_scroll))
-    button_add.pack(side=TOP, anchor="e", pady=12, padx=10)
+    button_add.grid(column=1, row=0, sticky=E, pady=10, padx=40)
 
     # Button to remove item
     button_remove = customtkinter.CTkButton(master=frame, text="Remove", command=lambda: open_remove_item(my_tree, tree_scroll))
-    button_remove.pack(side=TOP, anchor="e", pady=12, padx=10)
+    button_remove.grid(column=1, row=1, sticky=E, pady=10, padx=40)
+
+    # Label for title
+    label = customtkinter.CTkLabel(master=frame, text="Inventory", font=("Roboto", 24))
+    label.grid(column=0, row=1, sticky=W, pady=10, padx=15)
 
     # Create Treeview frame
     tree_frame = Frame(frame)
-    tree_frame.pack(pady=20)
+    tree_frame.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
 
     # Create Treeview scrollbar
-    tree_scroll = Scrollbar(tree_frame)
-    tree_scroll.pack(side=RIGHT, fill=Y)
+    tree_scroll = Scrollbar(tree_frame, orient="vertical")
+    tree_scroll.grid(column=1, row=0, sticky='ns')
 
     # Create Treeview
-    my_tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, height=30, selectmode="extended")
+    my_tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, height=25, selectmode="extended")
     create_tree(selection, my_tree, tree_scroll)
 
 
@@ -45,15 +49,29 @@ def create_tree(selection, tree, tree_scroll):
     """Create new Treeview"""
     style = ttk.Style()
     style.theme_use("default")
-    style.configure("Treeview", background="#2e2e2e", foreground="white", rowheight=25, fieldbackground="#2e2e2e")
+    style.configure(".", font=('Roboto', 10), foreground="white")
+    style.configure("Treeview.Heading", background="#3d3d3d", padding=8)
+    style.configure("Treeview", background="#2e2e2e", foreground="white", rowheight=25, fieldbackground="#2e2e2e", padding=10)
+
 
     if selection == "basic":
         df = pd.read_csv('microservice/basic_result.csv')
     elif selection == "advanced":
         df = pd.read_csv('microservice/advanced_result.csv')
+    elif selection == "dining":
+        df = pd.read_csv('microservice/home_inventory.csv')
+        df = df.loc[(df["Location"] == "Dining Room")]
+        df.to_csv("database/dining_room.csv", index=False)
+    elif selection == "living":
+        df = pd.read_csv('microservice/home_inventory.csv')
+        df = df.loc[(df["Location"] == "Living Room")]
+        df.to_csv("database/living_room.csv", index=False)
+    elif selection == "bedroom":
+        df = pd.read_csv('microservice/home_inventory.csv')
+        df = df.loc[(df["Location"] == "Bedroom")]
+        df.to_csv("database/bedroom.csv", index=False)
     elif selection == "all":
         df = pd.read_csv('microservice/home_inventory.csv')
-    # TO-DO
     else:
         df = pd.read_csv('microservice/home_inventory.csv')
 
@@ -79,7 +97,7 @@ def create_tree(selection, tree, tree_scroll):
     for row in df_rows:
         tree.insert("", "end", values=row)
 
-    tree.pack()
+    tree.grid(column=0, row=0)
 
     # Configure scrollbar
     tree_scroll.config(command=tree.yview)
