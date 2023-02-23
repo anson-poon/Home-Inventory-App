@@ -1,4 +1,4 @@
-from database import *
+import inventory as iv
 import time
 import customtkinter
 from tkinter import *
@@ -16,14 +16,14 @@ class MainPage(customtkinter.CTk):
         self.geometry("920x470")
         self.resizable(0, 0)
 
-        self.main_widget()
+        self.search_widget()
         self.about_widget()
-        self.category_widget()
+        self.locations_widget()
         self.view_all_widget()
 
         self.toplevel_window = None
 
-    def main_widget(self):
+    def search_widget(self):
         """Display basic and advanced search field"""
         self.frame = customtkinter.CTkFrame(self.master, corner_radius=20)
         self.frame.columnconfigure((0, 1, 2, 3), weight=1)
@@ -62,19 +62,26 @@ class MainPage(customtkinter.CTk):
             f.close()
             time.sleep(0.5)
 
-            open_database("basic")
+            self.open_inventory("basic")
         else:
             self.error.configure(text="This field is required", text_color="orange")
 
     def open_advanced_search(self):
-        """Open advanced search window"""
+        """Open advanced search window, code cited: GitHub @TomSchimansky/CustomTkinter"""
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             self.toplevel_window = AdvancedSearchWindow(self)  # create window if its None or destroyed
         else:
             self.toplevel_window.focus()  # if window exists focus it
 
+    def open_inventory(self, selection):
+        """Open advanced search window, code cited: GitHub @TomSchimansky/CustomTkinter"""
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = iv.InventoryPage(selection)  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+
     def about_widget(self):
-        """"""
+        """About widget fore introduction and new feature"""
         frame = customtkinter.CTkFrame(self.master, corner_radius=20)
         frame.grid(column=0, row=1, sticky=NSEW, pady=20, padx=40)
 
@@ -91,32 +98,32 @@ class MainPage(customtkinter.CTk):
                                            font=("Roboto", 12))
         self.text.grid(column=0, row=1, sticky=NSEW, pady=0, padx=30)
 
-    def category_widget(self):
-        """"""
+    def locations_widget(self):
+        """Location widget for filtering by location"""
         frame = customtkinter.CTkFrame(self.master, corner_radius=20)
         frame.grid(column=1, row=1, sticky=NSEW, pady=20, padx=40)
 
         label = customtkinter.CTkLabel(frame, text="Locations", font=("Roboto", 15))
         label.pack(pady=20, padx=40)
 
-        button1 = customtkinter.CTkButton(frame, text="Dining Room", command=lambda: open_database("dining"))
+        button1 = customtkinter.CTkButton(frame, text="Dining Room", command=lambda: self.open_inventory("dining"))
         button1.pack(pady=10, padx=40)
 
-        button2 = customtkinter.CTkButton(frame, text="Living Room", command=lambda: open_database("living"))
+        button2 = customtkinter.CTkButton(frame, text="Living Room", command=lambda: self.open_inventory("living"))
         button2.pack(pady=10, padx=40)
 
-        button3 = customtkinter.CTkButton(frame, text="Bedroom", command=lambda: open_database("bedroom"))
+        button3 = customtkinter.CTkButton(frame, text="Bedroom", command=lambda: self.open_inventory("bedroom"))
         button3.pack(pady=10, padx=40)
 
     def view_all_widget(self):
-        """Subframe 3 - View All"""
+        """View All widget for opening entire database"""
         frame = customtkinter.CTkFrame(self.master, corner_radius=20)
         frame.grid(column=2, row=1, sticky=NSEW, pady=20, padx=40)
 
         label_subframe3 = customtkinter.CTkLabel(frame, text="View all \ninventory",
                                                  font=("Roboto", 18))
         label_subframe3.pack(pady=40, padx=40)
-        button_view_all = customtkinter.CTkButton(frame, text="Go", command=lambda: open_database("all"))
+        button_view_all = customtkinter.CTkButton(frame, text="Go", command=lambda: self.open_inventory("all"))
         button_view_all.pack(pady=10, padx=40)
 
 
@@ -129,17 +136,28 @@ class AdvancedSearchWindow(customtkinter.CTkToplevel):
 
         self.label = customtkinter.CTkLabel(self, text="Dimensions", font=("Roboto", 20))
         self.label.pack(pady=20, padx=10)
+
+        # Width entry
         self.width = customtkinter.CTkEntry(self, width=70, height=30, placeholder_text="Width")
         self.width.pack(pady=12, padx=10)
+
+        # Depth entry
         self.depth = customtkinter.CTkEntry(self, width=70, height=30, placeholder_text="Depth")
         self.depth.pack(pady=12, padx=10)
+
+        # Height entry
         self.height = customtkinter.CTkEntry(self, width=70, height=30, placeholder_text="Height")
         self.height.pack(pady=12, padx=10)
+
+        # Button to submit item
         self.btn_go = customtkinter.CTkButton(self, text="Go", command=lambda: self.advanced_search())
         self.btn_go.pack(pady=12, padx=10)
 
-        self.error = customtkinter.CTkLabel(self, text="")  # Placeholder for error message
+        # Placeholder for error message
+        self.error = customtkinter.CTkLabel(self, text="")
         self.error.pack(pady=20)
+
+        self.toplevel_window = None
 
     def advanced_search(self):
         """Initiate communication with advanced_search microservice"""
@@ -152,7 +170,8 @@ class AdvancedSearchWindow(customtkinter.CTkToplevel):
                 with open('microservice/advanced_search.txt', 'w') as f:
                     f.write(str(w_num) + "\n" + str(d_num) + "\n" + str(h_num) + "\n")
                 time.sleep(0.5)
-                open_database("advanced")
+                MainPage.open_inventory(self, "advanced")
+                self.destroy()
         except ValueError:
             self.error.configure(text="Please enter valid numbers for all sides", text_color="orange")
 
