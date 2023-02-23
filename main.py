@@ -153,7 +153,6 @@ class AdvancedSearchWindow(customtkinter.CTkToplevel):
                     f.write(str(w_num) + "\n" + str(d_num) + "\n" + str(h_num) + "\n")
                 time.sleep(0.5)
                 open_database("advanced")
-                self.quit()
         except ValueError:
             self.error.configure(text="Please enter valid numbers for all sides", text_color="orange")
 
