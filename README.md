@@ -1,6 +1,6 @@
 # Home Inventory System
 
-A home inventory application with GUI that lets users record furnitures, appliances, or any items at home with functionalities for adding items, deleting items, and searching item by their name, brand, or dimensions.
+A home inventory application with GUI that lets users record furniture, appliances, or any items at home with functionalities for adding items, deleting items, and searching items by their name, brand, or dimensions.
 
 PLACEHOLDER TEXT
 
