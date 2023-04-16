@@ -42,7 +42,7 @@ Basic search function for searching items by name or brand
 
 
 ## Advanced Search
-Advanced search function for searcheing items by dimensions, yield all items with dimensions less than or equal to the inputted length/depth/height
+Advanced search function for searcheing items by dimensions, yields all items with dimensions less than or equal to the inputted length/depth/height
 
 <img src="https://user-images.githubusercontent.com/75619539/232160905-cb687f2c-a74b-4f6c-a39b-f897ac12f056.png" width=85%>
 <img src="https://user-images.githubusercontent.com/75619539/232160916-8e9ff6cc-7bf3-48d1-a5ae-4e6ed87d56af.png" width=85%>
